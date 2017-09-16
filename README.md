@@ -1,4 +1,4 @@
-# wp-if-link-404
+# iflink404
 wordpress plugin. if link is 404(broken), then change post status : publish to private.
 
 # Description
