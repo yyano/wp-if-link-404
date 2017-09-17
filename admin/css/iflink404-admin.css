@@ -7,3 +7,12 @@
     color: red;
     font-weight: bold;
 }
+.iflink404-dashboard-message {
+    padding-left: 2em;
+}
+
+.iflink404-dashboard li {
+    border-top: 1px solid #eee;
+    padding: 8px 12px;
+    background-color: #fafafa;
+}

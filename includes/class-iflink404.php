@@ -157,6 +157,8 @@ class Iflink404 {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'setMetaBox' );
 		$this->loader->add_action( 'save_post', $plugin_admin, 'saveCustomFileds' );
 
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'add_dashboard_widgets' );
+
 	}
 
 	/**

@@ -213,4 +213,66 @@ class Iflink404_Admin {
 			delete_post_meta( $post_id, '_iflink404_check_error_message' );
 		}
 	}
+	
+	public function add_dashboard_widgets() {
+
+		wp_add_dashboard_widget(
+	                 'iflink404_dashboard_widget',
+	                 'If link 404',         // Title.
+	                 array( $this, 'dashboard_widget_function')
+	        );		
+	}
+	
+	public function dashboard_widget_function() {
+		$args = array(
+			'post_type' => 'any',
+			'post_status' => 'pending',
+			'meta_query' => array(
+				'relation' => 'AND',
+				'date_clause' => array(
+					'key' => '_iflink404_check_date',
+					'compare' => 'EXISTS',
+				),
+				'message_clause' => array(
+					'key' => '_iflink404_check_error_message',
+					'compare' => 'EXISTS',
+				),
+			),
+			'orderby' => array(
+				'date_clause' => 'ASC',
+			),
+			'posts_per_page' => 3,
+		);
+
+		$the_query = new WP_Query( $args );
+		if ( $the_query->have_posts() ) {
+			printf( "<h3>Error founds : %d</h3>\n", $the_query->found_posts );
+
+			echo '<ul class="iflink404-dashboard">';
+			while ( $the_query->have_posts() ) {
+				$the_query->the_post();
+				$url = get_post_meta( get_the_ID(), '_iflink404_check_url', true );
+				$date = get_post_meta( get_the_ID(), '_iflink404_check_date', true );
+				$message = get_post_meta( get_the_ID(), '_iflink404_check_error_message', true );
+
+				echo '<li class="iflink404-dashboard">';
+				printf( '<h4>%s : <a href="%s">%s</a></h4>' . "\n",
+					get_post_type(),
+					get_edit_post_link(), get_the_title() );
+				printf( '<div class="iflink404-dashboard-message">%s : %s</div>', 
+					__('url', 'iflink404'), $url );
+				printf( '<div class="iflink404-dashboard-message">%s : %s</div>', 
+					__('check date', 'iflink404'),
+					date_i18n( get_option( 'date_format' ), $date ) . ' ' . date_i18n( 'H:i:s', $date ) );
+				printf( '<div class="iflink404-dashboard-message">%s : %s</div>', 
+					__('error', 'iflink404'),
+					$message );
+				echo '</li>'."\n";
+			}
+			echo "</ul>";
+			wp_reset_postdata();
+		}
+		
+	}
+	
 }
