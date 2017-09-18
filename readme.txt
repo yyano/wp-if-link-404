@@ -1,6 +1,6 @@
-git === if link is 404(broken), then set to private. ===
+=== if link is 404(broken), then set to private. ===
 Contributors: yyano
-Tags: link broken, link check
+Tags: if link is 404, link broken, link check, 
 Requires at least: 4.8.1
 Tested up to: 4.8.1
 Requires PHP: 7.0
