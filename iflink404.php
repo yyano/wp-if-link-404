@@ -16,8 +16,8 @@
  * @wordpress-plugin
  * Plugin Name:       if link is 404(broken), then set to private.
  * Plugin URI:        https://github.com/yyano/wp-if-link-404
- * Description:       If link is 404(broken), then Update PostStatus( publish to private ).
- * Version:           1.0.0.20170916
+ * Description:       If link is 404(broken), then Update Post status.
+ * Version:           1.0.1.20170918
  * Author:            yyano
  * Author URI:        https://github.com/yyano/
  * License:           GPL-2.0+
@@ -49,8 +49,18 @@ function deactivate_iflink404() {
 	Iflink404_Deactivator::deactivate();
 }
 
+/**
+ * The code that runs during plugin uninstall.
+ * This action is documented in includes/class-iflink404-deactivator.php
+ */
+function uninstall_iflink404() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-iflink404-deactivator.php';
+	Iflink404_Deactivator::uninstall();
+}
+
 register_activation_hook( __FILE__, 'activate_iflink404' );
 register_deactivation_hook( __FILE__, 'deactivate_iflink404' );
+register_uninstall_hook( __FILE__, 'uninstall_iflink404' );
 
 /**
  * The core plugin class that is used to define internationalization,

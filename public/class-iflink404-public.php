@@ -41,6 +41,15 @@ class Iflink404_Public {
 	private $version;
 
 	/**
+	 * Plugin options of this plugin.
+	 *
+	 * @since    1.0.1
+	 * @access   private
+	 * @var      string    $options    The options of this plugin.
+	 */
+	private $options;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -51,6 +60,8 @@ class Iflink404_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+        $this->options = get_option( 'iflink404-options' );
 
 	}
 
@@ -134,6 +145,7 @@ class Iflink404_Public {
 			while ( $the_query->have_posts() ) {
 				$the_query->the_post();
 				$post_id = get_the_ID();
+				$post_type = get_post_type( $post_id );
 				$urls = get_post_custom_values( '_iflink404_check_url', $post_id );
 
 				error_log( '--- Iflink404 ---' );
@@ -153,7 +165,7 @@ class Iflink404_Public {
 					curl_setopt( $ch, CURLOPT_MAXREDIRS, 3 );
 					curl_setopt( $ch, CURLOPT_NOBODY, true );
 					curl_setopt( $ch, CURLOPT_TIMEOUT_MS, 1500 );
-					curl_setopt( $ch, CURLOPT_USERAGENT, 'iflink404 checker 20170916' );
+					curl_setopt( $ch, CURLOPT_USERAGENT, 'iflink404 checker:' . $this->version );
 
 					$response = curl_exec( $ch );
 					$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
@@ -169,14 +181,7 @@ class Iflink404_Public {
 							// Ooops, cURL error!
 							add_post_meta( $post_id, '_iflink404_check_error_message', $curl_error, true );
 
-							remove_action( 'save_post', 'published_to_pending' );
-							wp_update_post(
-								array(
-									'ID' => $post_id,
-									'post_status' => 'pending',
-								)
-							);
-							add_action( 'save_post', 'published_to_pending' );
+							$this->updatePostStatus($post_id, $post_type);
 							break;
 
 						case '200':
@@ -188,14 +193,7 @@ class Iflink404_Public {
 							$message = sprintf( '%s: %s', $http_code, $this->getHttpStatus( $http_code ) );
 							add_post_meta( $post_id, '_iflink404_check_error_message', $message, true );
 
-							remove_action( 'save_post', 'published_to_pending' );
-							wp_update_post(
-								array(
-									'ID' => $post_id,
-									'post_status' => 'pending',
-								)
-							);
-							add_action( 'save_post', 'published_to_pending' );
+							$this->updatePostStatus($post_id, $post_type);
 							break;
 					}
 					update_post_meta( $post_id, '_iflink404_check_date', time() );
@@ -203,6 +201,27 @@ class Iflink404_Public {
 			}
 		}
 	}
+
+	/**
+     * Update post status
+	 *
+	 * @since    1.0.1
+	 */
+	private function updatePostStatus( $post_id, $post_type ) {
+
+		$to_status = isset( $this->options[$post_type] ) ? esc_attr( $this->options[$post_type] ) : "private";
+		$action_name = 'published_to_' . $to_status;
+
+		remove_action( 'save_post', $action_name );
+		wp_update_post(
+			array(
+				'ID' => $post_id,
+				'post_status' => $to_status,
+			)
+		);
+		add_action( 'save_post', $action_name );
+	}
+
 
 	/**
 	 *

@@ -33,4 +33,13 @@ class Iflink404_Deactivator {
 		wp_clear_scheduled_hook( 'iflink404_check_links' );
 	}
 
+	/**
+	 * uninstall
+	 *
+	 * @since    1.0.1
+	 */
+	public static function uninstall() {
+		delete_option( 'iflink404-options' );
+	}
+
 }
