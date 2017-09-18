@@ -24,6 +24,9 @@ so that you can keep healthy content at any time.
 
 == Changelog ==
 
+= 1.0.2.20170918 =
+* add assets/images
+
 = 1.0.1.20170918 =
 * add menu in setting menu. 
 * selectable "set to post status".
