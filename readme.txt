@@ -4,7 +4,7 @@ Tags: if link is 404, link broken, link check,
 Requires at least: 4.8.1
 Tested up to: 4.8.1
 Requires PHP: 7.0
-Stable tag: 1.0.1.20170918
+Stable tag: 1.0.2.20170918
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 

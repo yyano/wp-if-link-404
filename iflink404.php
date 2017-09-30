@@ -17,7 +17,7 @@
  * Plugin Name:       if link is 404(broken), then set to private.
  * Plugin URI:        https://github.com/yyano/wp-if-link-404
  * Description:       If link is 404(broken), then Update Post status.
- * Version:           1.0.1.20170918
+ * Version:           1.0.2.20170918
  * Author:            yyano
  * Author URI:        https://github.com/yyano/
  * License:           GPL-2.0+
